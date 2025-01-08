@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('https://cdn.pixabay.com/photo/2015/06/19/21/24/avenue-815297_1280.jpg') no-repeat center center fixed;
+            background-size: cover;
+            text-align: center;
+            padding: 20px;
+            color: #fff;
+        }
+        .weather-container {
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+        }
+        .weather-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        .weather-details {
+            margin-top: 15px;
+            font-size: 18px;
+            color: #555;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+            width: 60%;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: #fff;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Weather App</h1>
+    <div class="weather-container">
+        <div class="weather-title">Enter City Name</div>
+        <form id="weather-form">
+            <input type="text" id="city" name="city" placeholder="City" required>
+            <button type="submit">Get Weather</button>
+        </form>
+        <div id="weather-output" class="weather-details"></div>
+        <div id="error-message" class="error-message"></div>
+    </div>
+    <script>
+        const form = document.getElementById('weather-form');
+        const outputDiv = document.getElementById('weather-output');
+        const errorDiv = document.getElementById('error-message');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const city = document.getElementById('city').value;
+
+            try {
+                const response = await fetch(`/weather?city=${city}`);
+                if (!response.ok) {
+                    throw new Error('City not found or server error.');
+                }
+                const data = await response.json();
+                outputDiv.innerHTML = `
+                    <strong>${data.city}</strong><br>
+                    Temperature: ${data.temperature}&#8451;<br>
+                    Condition: ${data.condition}
+                `;
+                errorDiv.innerHTML = '';
+            } catch (error) {
+                errorDiv.textContent = error.message;
+                outputDiv.innerHTML = '';
+            }
+        });
+    </script>
+</body>
+</html>
